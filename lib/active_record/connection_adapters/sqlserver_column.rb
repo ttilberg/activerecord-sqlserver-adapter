@@ -2,8 +2,8 @@ module ActiveRecord
   module ConnectionAdapters
     class SQLServerColumn < Column
 
-      def initialize(name, default, sql_type_metadata = nil, null = true, table_name = nil, default_function = nil, collation = nil, comment = nil, **)
-        @sqlserver_options = {}
+      def initialize(name, default, sql_type_metadata = nil, null = true, table_name = nil, default_function = nil, collation = nil, comment = nil, **sqlserver_options)
+        @sqlserver_options = sqlserver_options
         @name = name.freeze
         @sql_type_metadata = sql_type_metadata
         @null = null
