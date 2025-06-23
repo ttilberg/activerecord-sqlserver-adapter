@@ -6,12 +6,21 @@ module ActiveRecord
       class Column < ConnectionAdapters::Column
         delegate :is_identity, :is_primary, :table_name, :ordinal_position, to: :sql_type_metadata
 
-        def initialize(*, is_identity: nil, is_primary: nil, table_name: nil, ordinal_position: nil, **)
+        def initialize(*, is_identity: nil, is_primary: nil, table_name: nil, ordinal_position: nil, generated: nil, **)
           super
           @is_identity = is_identity
           @is_primary = is_primary
           @table_name = table_name
           @ordinal_position = ordinal_position
+          @generated = generated
+        end
+
+        def virtual?
+          @generated.present?
+        end
+
+        def has_default?
+          super && !virtual?
         end
 
         def is_identity?

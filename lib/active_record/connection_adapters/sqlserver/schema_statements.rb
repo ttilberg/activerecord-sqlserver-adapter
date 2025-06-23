@@ -78,12 +78,13 @@ module ActiveRecord
               ci[:default_function],
               ci[:collation],
               nil,
+              ci[:computed],
               sqlserver_options
             )
           end
         end
 
-        def new_column(name, default, sql_type_metadata, null, default_function = nil, collation = nil, comment = nil, sqlserver_options = {})
+        def new_column(name, default, sql_type_metadata, null, default_function = nil, collation = nil, comment = nil, computed = false, sqlserver_options = {})
           SQLServer::Column.new(
             name,
             default,
@@ -92,6 +93,7 @@ module ActiveRecord
             default_function,
             collation: collation,
             comment: comment,
+            generated: computed,
             **sqlserver_options
           )
         end
@@ -553,6 +555,7 @@ module ActiveRecord
             end
             ci[:null] = ci[:is_nullable].to_i == 1
             ci.delete(:is_nullable)
+            ci[:computed] = ci.delete(:is_computed).to_i == 1
             ci[:is_primary] = ci[:is_primary].to_i == 1
             ci[:is_identity] = ci[:is_identity].to_i == 1 unless [TrueClass, FalseClass].include?(ci[:is_identity].class)
             ci
@@ -603,6 +606,10 @@ module ActiveRecord
                 WHEN 1
                 THEN 1
               END AS [is_nullable],
+              CASE c.is_computed
+                WHEN 1
+                THEN 1
+              END AS [is_computed],
               CASE
                 WHEN ic.object_id IS NOT NULL
                 THEN 1

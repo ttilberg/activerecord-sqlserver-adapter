@@ -109,6 +109,8 @@ module ActiveRecord
             type = :datetime2 unless options[:precision].nil?
           when :primary_key
             options[:is_identity] = true
+          when :virtual
+            type = options[:type]
           end
 
           super

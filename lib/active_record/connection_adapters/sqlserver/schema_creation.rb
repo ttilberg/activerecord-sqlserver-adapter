@@ -51,6 +51,12 @@ module ActiveRecord
 
         def add_column_options!(sql, options)
           sql << " DEFAULT #{quote_default_expression(options[:default], options[:column])}" if options_include_default?(options)
+          if as = options[:as]
+            sql << " AS (#{as})"
+            if options[:stored]
+              sql << " PERSISTED"
+            end
+          end
           if options[:collation].present?
             sql << " COLLATE #{options[:collation]}"
           end

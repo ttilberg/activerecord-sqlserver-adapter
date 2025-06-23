@@ -167,6 +167,10 @@ module ActiveRecord
         true
       end
 
+      def supports_virtual_columns?
+        true
+      end
+
       def supports_datetime_with_precision?
         true
       end
